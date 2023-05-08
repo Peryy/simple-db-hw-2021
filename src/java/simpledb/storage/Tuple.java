@@ -1,6 +1,7 @@
 package simpledb.storage;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -12,6 +13,9 @@ import java.util.Iterator;
 public class Tuple implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private TupleDesc tupleDesc;
+    private RecordId recordId;
+    private final ArrayList<Field> fields;
 
     /**
      * Create a new tuple with the specified schema (type).
@@ -21,15 +25,15 @@ public class Tuple implements Serializable {
      *            instance with at least one field.
      */
     public Tuple(TupleDesc td) {
-        // some code goes here
+        fields = new ArrayList<Field>(td.numFields());
+        tupleDesc = td;
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        // some code goes here
-        return null;
+        return tupleDesc;
     }
 
     /**
@@ -37,8 +41,7 @@ public class Tuple implements Serializable {
      *         be null.
      */
     public RecordId getRecordId() {
-        // some code goes here
-        return null;
+        return recordId;
     }
 
     /**
@@ -48,9 +51,8 @@ public class Tuple implements Serializable {
      *            the new RecordId for this tuple.
      */
     public void setRecordId(RecordId rid) {
-        // some code goes here
+        recordId = rid;
     }
-
     /**
      * Change the value of the ith field of this tuple.
      *
@@ -60,7 +62,7 @@ public class Tuple implements Serializable {
      *            new value for the field.
      */
     public void setField(int i, Field f) {
-        // some code goes here
+        fields.set(i, f);
     }
 
     /**
@@ -70,8 +72,7 @@ public class Tuple implements Serializable {
      *            field index to return. Must be a valid index.
      */
     public Field getField(int i) {
-        // some code goes here
-        return null;
+        return fields.get(i);
     }
 
     /**
@@ -93,8 +94,7 @@ public class Tuple implements Serializable {
      * */
     public Iterator<Field> fields()
     {
-        // some code goes here
-        return null;
+        return fields.iterator();
     }
 
     /**
@@ -102,6 +102,6 @@ public class Tuple implements Serializable {
      * */
     public void resetTupleDesc(TupleDesc td)
     {
-        // some code goes here
+        tupleDesc = td;
     }
 }
