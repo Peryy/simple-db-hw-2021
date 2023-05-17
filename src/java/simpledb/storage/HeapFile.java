@@ -152,38 +152,31 @@ public class HeapFile implements DbFile {
 
         @Override
         public boolean hasNext() throws DbException, TransactionAbortedException {
-            if (iterator == null){
-                return false;
-            }
-            if (!iterator.hasNext()) {
-
-                pageNo++;
-                if (pageNo >= heapfile.numPages()) {
-                    return false;
-                }
-                HeapPageId pageID = new HeapPageId(heapfile.getId(), pageNo);
-                HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pageID, Permissions.READ_ONLY);
-                if (page == null){
-                    throw new DbException("page is not existed");
-                }
-                return true;
-
-            } else {
+            if (iterator.hasNext()){
                 return true;
             }
+            else{
+                while(true){
+                    pageNo++;
+                    if (pageNo>=heapfile.numPages()){return false;}
+                    HeapPageId pageID = new HeapPageId(heapfile.getId(), pageNo);
+                    HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pageID, Permissions.READ_ONLY);
+                    if (page == null){continue;}
+                    iterator = page.iterator();
+                    return true;
+                }
+            }
+
         }
 
         @Override
         public Tuple next() throws DbException, TransactionAbortedException, NoSuchElementException {
-            if(!hasNext()){
-                throw new NoSuchElementException("This is the last element of Iterator");
+            if(hasNext()){
+                return iterator.next();
             }
-            if (!iterator.hasNext()) {
-                HeapPageId pageID = new HeapPageId(heapfile.getId(), pageNo);
-                HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pageID, Permissions.READ_ONLY);
-                iterator = page.iterator();
+            else{
+                throw new NoSuchElementException();
             }
-            return iterator.next();
         }
 
         @Override
