@@ -77,7 +77,6 @@ public class Join extends Operator {
         super.open();
         child1.open();
         child2.open();
-
     }
 
     public void close() {
